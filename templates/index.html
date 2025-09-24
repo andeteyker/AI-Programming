@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Snake Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <div>
+          <h1>Snake Dashboard</h1>
+          <p>
+            Spiele eine Runde Snake direkt im Browser. Sammle so viele Früchte
+            wie möglich und beobachte, wie sich dein Score in Echtzeit im
+            Dashboard aktualisiert.
+          </p>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="metrics" aria-label="Spielstatistiken">
+          <article class="metric-card">
+            <h2>Aktueller Score</h2>
+            <p id="score-value" class="metric-card__value">0</p>
+          </article>
+          <article class="metric-card">
+            <h2>Highscore (Server)</h2>
+            <p id="high-score-value" class="metric-card__value">0</p>
+          </article>
+          <article class="metric-card">
+            <h2>Geschwindigkeit</h2>
+            <p id="speed-value" class="metric-card__value">0</p>
+          </article>
+        </section>
+
+        <section class="game" aria-label="Snake Spielbereich">
+          <canvas
+            id="snake-board"
+            width="640"
+            height="480"
+            role="img"
+            aria-label="Spielfeld für Snake"
+          ></canvas>
+          <div id="status-banner" class="status-banner" role="status">
+            Bereit zum Start
+          </div>
+        </section>
+
+        <aside class="sidebar" aria-label="Bedienung und Hinweise">
+          <section class="panel">
+            <h2>Steuerung</h2>
+            <ul>
+              <li>Pfeiltasten oder WASD zum Steuern der Schlange.</li>
+              <li>Drücke die Leertaste, um das Spiel zu pausieren oder fortzusetzen.</li>
+              <li>Nutze den Neu-Start Knopf, um jederzeit von vorne zu beginnen.</li>
+            </ul>
+          </section>
+          <section class="panel">
+            <h2>Spielverlauf</h2>
+            <p>
+              Jede gefressene Frucht erhöht deinen Score und steigert die
+              Geschwindigkeit. Nach jedem Spiel wird dein Ergebnis an den Server
+              gesendet, um den Highscore zu aktualisieren.
+            </p>
+            <button id="reset-button" type="button" class="button">
+              Neu starten
+            </button>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script defer src="{{ url_for('static', filename='js/snake.js') }}"></script>
+  </body>
+</html>
