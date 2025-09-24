@@ -5,13 +5,13 @@ supports common arithmetic operations. Run the file directly to start the
 application.
 """
 
-from __future__ import annotations
+
 
 import ast
 import operator
 import tkinter as tk
 from tkinter import ttk
-from typing import Callable, Dict
+from typing import Callable, Dict, List
 
 
 class Calculator(tk.Tk):
@@ -141,7 +141,7 @@ class Calculator(tk.Tk):
     # Helper methods
     # ------------------------------------------------------------------
     @staticmethod
-    def _tokenize_for_decimal(expression: str) -> list[str]:
+    def _tokenize_for_decimal(expression: str) -> List[str]:
         token = ""
         tokens = []
         for char in expression:
