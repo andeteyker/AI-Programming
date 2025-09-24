@@ -1,4 +1,4 @@
-"""Flask application serving a simple Snake dashboard."""
+"""Flask application serving a simple Chess dashboard."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -10,20 +10,35 @@ from flask import Flask, Response, jsonify, render_template, request
 
 @dataclass
 class ScoreBoard:
-    """Thread-safe in-memory scoreboard for the Snake game."""
+    """Thread-safe in-memory scoreboard for the Chess game."""
 
-    high_score: int = 0
+    white_wins: int = 0
+    black_wins: int = 0
+    draws: int = 0
     _lock: Lock = field(default_factory=Lock, repr=False)
 
     def to_dict(self) -> Dict[str, int]:
-        return {"highScore": self.high_score}
+        return {
+            "whiteWins": self.white_wins,
+            "blackWins": self.black_wins,
+            "draws": self.draws,
+        }
 
-    def update(self, score: int) -> int:
-        """Update the stored high score if the provided score is higher."""
+    def update(self, result: str) -> Dict[str, int]:
+        """Update the stored results counter based on the game outcome."""
+
+        normalized = (result or "").strip().lower()
         with self._lock:
-            if score > self.high_score:
-                self.high_score = score
-            return self.high_score
+            if normalized == "white":
+                self.white_wins += 1
+            elif normalized == "black":
+                self.black_wins += 1
+            elif normalized == "draw":
+                self.draws += 1
+            else:
+                raise ValueError("Ungültiges Spielergebnis")
+
+            return self.to_dict()
 
 
 app = Flask(__name__)
@@ -32,23 +47,22 @@ scoreboard = ScoreBoard()
 
 @app.route("/")
 def index() -> str:
-    """Render the dashboard with the embedded Snake game."""
+    """Render the dashboard with the embedded chess experience."""
     return render_template("index.html")
 
 
-@app.route("/api/high-score", methods=["GET", "POST"])
-def high_score() -> Response:
-    """Retrieve or update the high score for the Snake game."""
+@app.route("/api/results", methods=["GET", "POST"])
+def results() -> Response:
+    """Retrieve or update the aggregated results for finished chess games."""
     if request.method == "POST":
         payload = request.get_json(silent=True) or {}
-        score = payload.get("score", 0)
+        result = payload.get("result")
         try:
-            score_value = int(score)
-        except (TypeError, ValueError):
-            return jsonify({"error": "Score muss eine Ganzzahl sein."}), 400
+            updated = scoreboard.update(result)
+        except ValueError:
+            return jsonify({"error": "Ergebnis muss 'white', 'black' oder 'draw' sein."}), 400
 
-        updated_high_score = scoreboard.update(score_value)
-        return jsonify({"highScore": updated_high_score})
+        return jsonify(updated)
 
     return jsonify(scoreboard.to_dict())
 
