@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Schach Dashboard</title>
+    <title>Snake Dashboard</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/dashboard.css') }}"
@@ -13,11 +13,11 @@
     <div class="app">
       <header class="app__header">
         <div>
-          <h1>Schach Dashboard</h1>
+          <h1>Snake Dashboard</h1>
           <p>
-            Spiele spannende Partien Schach direkt im Browser. Wechsle dich
-            mit einer zweiten Person ab, analysiere deine Züge im Verlauf und
-            behalte die Siegstatistik stets im Blick.
+            Spiele eine Runde Snake direkt im Browser. Sammle so viele Früchte
+            wie möglich und beobachte, wie sich dein Score in Echtzeit im
+            Dashboard aktualisiert.
           </p>
         </div>
       </header>
@@ -25,75 +25,56 @@
       <main class="dashboard">
         <section class="metrics" aria-label="Spielstatistiken">
           <article class="metric-card">
-            <h2>Siege Weiß</h2>
-            <p id="white-wins-value" class="metric-card__value">0</p>
+            <h2>Aktueller Score</h2>
+            <p id="score-value" class="metric-card__value">0</p>
           </article>
           <article class="metric-card">
-            <h2>Siege Schwarz</h2>
-            <p id="black-wins-value" class="metric-card__value">0</p>
+            <h2>Highscore (Server)</h2>
+            <p id="high-score-value" class="metric-card__value">0</p>
           </article>
           <article class="metric-card">
-            <h2>Remis</h2>
-            <p id="draws-value" class="metric-card__value">0</p>
+            <h2>Geschwindigkeit</h2>
+            <p id="speed-value" class="metric-card__value">0</p>
           </article>
         </section>
 
-        <section class="game" aria-label="Schachbrett">
-          <div class="board-wrapper">
-            <div
-              id="chess-board"
-              class="chess-board"
-              role="img"
-              aria-label="Schachbrett"
-            ></div>
-            <div id="status-banner" class="status-banner" role="status">
-              Weiß am Zug
-            </div>
-            <div id="promotion-dialog" class="promotion-dialog" role="dialog">
-              <p>Figur wählen:</p>
-              <div class="promotion-options">
-                <button data-piece="q" type="button">Dame</button>
-                <button data-piece="r" type="button">Turm</button>
-                <button data-piece="b" type="button">Läufer</button>
-                <button data-piece="n" type="button">Springer</button>
-              </div>
-            </div>
+        <section class="game" aria-label="Snake Spielbereich">
+          <canvas
+            id="snake-board"
+            width="640"
+            height="480"
+            role="img"
+            aria-label="Spielfeld für Snake"
+          ></canvas>
+          <div id="status-banner" class="status-banner" role="status">
+            Bereit zum Start
           </div>
         </section>
 
         <aside class="sidebar" aria-label="Bedienung und Hinweise">
           <section class="panel">
-            <h2>Zugverlauf</h2>
-            <ol id="move-history" class="move-history" aria-live="polite"></ol>
+            <h2>Steuerung</h2>
+            <ul>
+              <li>Pfeiltasten oder WASD zum Steuern der Schlange.</li>
+              <li>Drücke die Leertaste, um das Spiel zu pausieren oder fortzusetzen.</li>
+              <li>Nutze den Neu-Start Knopf, um jederzeit von vorne zu beginnen.</li>
+            </ul>
           </section>
           <section class="panel">
-            <h2>Bedienung</h2>
+            <h2>Spielverlauf</h2>
             <p>
-              Klicke eine eigene Figur an, um mögliche Züge hervorzuheben, und
-              bestätige den Zielplatz mit einem zweiten Klick. Rochade,
-              en-passant und Umwandlungen werden automatisch gehandhabt.
-              Beende eine Partie per Aufgabe oder Remisangebot über die
-              Schnell-Optionen.
+              Jede gefressene Frucht erhöht deinen Score und steigert die
+              Geschwindigkeit. Nach jedem Spiel wird dein Ergebnis an den Server
+              gesendet, um den Highscore zu aktualisieren.
             </p>
-            <div class="button-group">
-              <button id="reset-button" type="button" class="button">
-                Neue Partie
-              </button>
-              <button id="resign-white" type="button" class="button button--secondary">
-                Weiß gibt auf
-              </button>
-              <button id="resign-black" type="button" class="button button--secondary">
-                Schwarz gibt auf
-              </button>
-              <button id="offer-draw" type="button" class="button button--secondary">
-                Remis
-              </button>
-            </div>
+            <button id="reset-button" type="button" class="button">
+              Neu starten
+            </button>
           </section>
         </aside>
       </main>
     </div>
 
-    <script defer src="{{ url_for('static', filename='js/chess.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/snake.js') }}"></script>
   </body>
 </html>
